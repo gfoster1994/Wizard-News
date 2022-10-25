@@ -61,11 +61,10 @@ app.get("/posts/:id", (req, res) => {
             <small>(by ${post.name})</small>
           </p>
           <small class="news-info">
+            <p>${post.content}</p>
+            <br>
             ${post.upvotes} upvotes | ${post.date}
           </small>
-          <div class="news-content>
-          <p>${post.content}</p>
-          </div>
           </div>
     </div>
   </body>
