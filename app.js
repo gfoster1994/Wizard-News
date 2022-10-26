@@ -1,12 +1,11 @@
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
-const volleyball = require("volleyball");
 const postBank = require("./postBank");
+const timeAgo = require('node-time-ago')
 
 //middleware
 app.use(morgan("dev"));
-app.use(volleyball);
 app.use(express.static("public"));
 
 app.get("/style.css");
@@ -31,7 +30,7 @@ app.get("/", (req, res) => {
           <small>(by ${post.name})</small>
         </p>
         <small class="news-info">
-          ${post.upvotes} upvotes | ${post.date}
+          ${post.upvotes} upvotes | ${timeAgo(post.date)}
         </small>
       </div>`
       )
@@ -63,7 +62,7 @@ app.get("/posts/:id", (req, res) => {
           <small class="news-info">
             <p>${post.content}</p>
             <br>
-            ${post.upvotes} upvotes | ${post.date}
+            ${post.upvotes} upvotes | ${timeAgo(post.date)}
           </small>
           </div>
     </div>
