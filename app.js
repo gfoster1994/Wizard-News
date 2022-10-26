@@ -69,10 +69,18 @@ app.get("/posts/:id", (req, res) => {
     </div>
   </body>
   </html>`;
-  res.send(html);
+  if (!post.id) { throw new Error("Not Found") }
+  else { res.send(html); }
 });
 
 const PORT = 1337;
+
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  // res.status(500).send('Something broke!')
+  res.status(404).send('Page not found!')
+})
+
 app.listen(PORT, () => {
   console.log(`App listening in port ${PORT}`);
 });
