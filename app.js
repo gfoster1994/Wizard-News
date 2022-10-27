@@ -2,7 +2,10 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const postBank = require("./postBank");
-const timeAgo = require('node-time-ago')
+// const timeAgo = require('node-time-ago');
+
+const  { postsRouter } = require("./Posts.js")
+const { singlePostRouter } = require("./SinglePost.js")
 
 //middleware
 app.use(morgan("dev"));
@@ -11,68 +14,23 @@ app.use(express.static("public"));
 app.get("/style.css");
 
 app.get("/", (req, res) => {
+  res.send("Home Page!");
+});
+
+// app.use("/posts", postsRouter)
+app.get("/posts", (req, res) => {
   const posts = postBank.list();
-  const html = `<!DOCTYPE html>
-<html>
-<head>
-  <title>Wizard News</title>
-  <link rel="stylesheet" href="/style.css" />
-</head>
-<body>
-  <div class="news-list">
-    <header><img src="/logo.png"/>Wizard News</header>
-    ${posts
-      .map(
-        (post) => `
-      <div class='news-item'>
-        <p>
-          <span class="news-position">${post.id}. ▲</span>${post.title}
-          <small>(by ${post.name})</small>
-        </p>
-        <small class="news-info">
-          ${post.upvotes} upvotes | ${timeAgo(post.date)}
-        </small>
-      </div>`
-      )
-      .join("")}
-  </div>
-</body>
-</html>`;
-  res.send(html);
-});
+  res.send(postsRouter(posts))
+})
 
-//single post route
-app.get("/posts/:id", (req, res) => {
-  const id = req.params.id;
-  const post = postBank.find(id);
-  const html = `<!DOCTYPE html>
-  <html>
-  <head>
-    <title>Wizard News</title>
-    <link rel="stylesheet" href="/style.css" />
-  </head>
-  <body>
-    <div class="news-list">
-      <header><img src="/logo.png"/>Wizard News</header>
-      <div class='news-item'>
-          <p>
-            <span class="news-position">${post.id}. ▲</span>${post.title}
-            <small>(by ${post.name})</small>
-          </p>
-          <small class="news-info">
-            <p>${post.content}</p>
-            <br>
-            ${post.upvotes} upvotes | ${timeAgo(post.date)}
-          </small>
-          </div>
-    </div>
-  </body>
-  </html>`;
-  if (!post.id) { throw new Error("Not Found") }
-  else { res.send(html); }
-});
+// app.use("/posts/:id", singlePostRouter)
 
-const PORT = 1337;
+
+
+
+
+// const PORT = 1337;
+const PORT = 1338;
 
 app.use((err, req, res, next) => {
   console.error(err.stack)
